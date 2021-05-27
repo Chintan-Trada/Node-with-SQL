@@ -1,10 +1,10 @@
 const User = require('../models/user.modal');
 
-exports.find = (req,res) => {
-    User.findAll((err,user) => {
+exports.find = async (req,res) => {
+    await User.findAll((err,user) => {
         if(err){
             res.statusCode = 401;
-            res.json({error: true, message:'Data Not Found'});
+            res.json({error: true, message:err});
         }
         else{
             res.statusCode = 200;
@@ -13,16 +13,16 @@ exports.find = (req,res) => {
     })
 }
 
-exports.signUp = (req,res) =>{
+exports.signUp = async (req,res) =>{
 
     const new_user = new User(req.body);
 
     if(req.body.constructor === Object && Object.keys(req.body).length === 0){
         res.statusCode = 400;
-        res.json({error: true, message: 'Please Enter All Field'});
+        res.json({error: true, message: err});
     }
     else{
-        User.create(new_user, (err,user) => {
+        await User.create(new_user, (err,user) => {
             if(err){
                 res.statusCode = 401;
                 res.json({error: true, message: err});
@@ -35,7 +35,7 @@ exports.signUp = (req,res) =>{
     }
 };
 
-exports.LogIn = (req,res) =>{
+exports.logIn = async (req,res) =>{
     console.log(req.body);
 
     let username = req.body.username;
@@ -45,14 +45,14 @@ exports.LogIn = (req,res) =>{
         res.json({error: true, message: 'Please Enter All Field'});
     }
     else{
-        User.find(username,password, (err, user) => {
+        await User.find(username,password, (err, user) => {
             if(err){
                 res.statusCode = 401;
-                res.json({error: true, message:'Data Not Found'});
+                res.json({error: true, message:err});
             }
             else if(user.length === 0){
                 res.statusCode = 401;
-                res.json({error: true, message:'Data Not Found'});
+                res.json({error: true, message:'Your credantial doesn\'t match'});
             }
             else{
                 res.statusCode = 200;
@@ -60,4 +60,20 @@ exports.LogIn = (req,res) =>{
             }
         });
     }
+}
+
+exports.editUser = async (req,res) => {
+    const id = req.params.id;
+    const data = req.body;
+    await User.update(id, data, (err, user) => {
+        if (err) {
+            res.statusCode = 400;
+            res.json({ error: true, message: err  });
+        } else {
+            res.statusCode = 200;
+            console.log('user', user);
+            res.json(user);
+        }
+    });
+
 }

@@ -47,4 +47,17 @@ User.find = (username,password,callback) =>{
     })
 }
 
+User.update = (id, data, callback) => {    
+    let sql = `UPDATE user SET username=?,password=?,firstname=?,lastname=?,contact=?,email=? WHERE id = ?`;
+    dbConn.query(sql, [data.username, data.password, data.firstname, data.lastname, data.contact, data.email,id], (err, res) => {
+        if (err) {
+            console.log('Error', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        } else {
+            callback(null, res);
+            console.log(data)
+        }
+    });
+}
+
 module.exports = User;
