@@ -10,7 +10,8 @@ var User = function(user){
 };
 
 User.findAll = (callback) =>{
-    dbConn.query('SELECT * FROM user', (err,res) =>{
+    let sql = `SELECT * FROM user`
+    dbConn.query(sql, (err,res) =>{
         if(err){
             console.log('Error', err.sqlMessage);
             callback(err.sqlMessage, null);

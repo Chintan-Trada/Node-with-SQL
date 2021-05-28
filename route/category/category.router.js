@@ -5,7 +5,11 @@ const categoryRouter = require('../../controller/categoryController');
 
 router.get('/', categoryRouter.findAll);
 router.post('/', categoryRouter.create);
+
+router.get('/:id' , categoryRouter.findById)
+
 router.put('/:id', categoryRouter.update);
-router.delete('/id', categoryRouter.delete);
+
+router.delete('/:id', categoryRouter.delete);
 
 module.exports = router;
