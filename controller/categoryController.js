@@ -6,6 +6,10 @@ exports.findAll = (req,res) => {
             res.statusCode = 400;
             res.json({error: true, message: err})
         }
+        else if(category.length === 0){
+            res.statusCode = 400;
+            res.json({error: true, message:`No data are insertet`});
+        }
         else{
             console.log(category)
             res.statusCode = 200;

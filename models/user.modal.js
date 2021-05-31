@@ -61,4 +61,43 @@ User.update = (id, data, callback) => {
     });
 }
 
+User.changePassword =(id, data, callback) => {
+    let sql = `UPDATE user SET password=? WHERE id = ?`;
+    dbConn.query(sql,[data.password, id], (err, res) => {
+        if(err) {
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
+User.findUser = (id, callback) => {
+    let sql = `SELECT password FROM user WHERE id = ?`;
+    dbConn.query(sql, id, (err, res) => {
+        if(err) {
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
+User.profile = (id, callback) => {
+    let sql = `SELECT * FROM user WHERE id = ?`;
+    dbConn.query(sql, id, (err,res) => {
+        if(err){
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
 module.exports = User;
