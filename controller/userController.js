@@ -1,82 +1,87 @@
-const User = require('../models/user.modal');
-const Authentication = require('../middleware/authentication');
+const { GeneralError, NotFound, BadRequest, UnAuthorized } = require('../middleware/error');
+const { GeneralResponse } = require('../middleware/response');
 
-exports.find = async (req,res) => {
-    await User.findAll((err,user) => {
-        if(err){
-            res.statusCode = 401;
-            res.json({error: true, message:err});
-        }
-        else if(user.length === 0){
-            res.statusCode = 400;
-            res.json({error: true, message:`No data are insertet`});
-        }
-        else{
-            res.statusCode = 200;
-            res.json({error: true, message:'Data  Found', data: user});
-        }
-    })
+const User = require('../models/user.modal');
+
+const Authentication = require('../middleware/authentication');
+const config = require('../middleware/config')
+
+exports.find = async (req, res, next) => {
+    try {
+        await User.findAll((err, user) => {
+            if (err) {
+                next(new NotFound('Not found user'))
+            }
+            else if (user.length === 0) {
+                next(new NotFound('Not found user'))
+            }
+            else {
+                next(new GeneralResponse('User', user))
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError('error while getting user list'))
+    }
 }
 
-exports.signUp = async (req,res) =>{
+exports.signUp = async (req, res, next) => {
 
     const new_user = new User(req.body);
 
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
-        res.statusCode = 400;
-        res.json({error: true, message: err});
-    }
-    else{
-        await User.create(new_user, (err,user) => {
-            if(err){
-                res.statusCode = 401;
-                res.json({error: true, message: err});
+    try {
+        await User.create(new_user, (err, user) => {
+            if (err) {
+                next(new BadRequest(err));
             }
-            else{
-                res.statusCode = 200;
-                res.json({error: false, message:'Data Add Successfully;'})
+            else {
+                rnext(new GeneralResponse('User', user));
             }
         });
     }
+    catch (err) {
+        next(new GeneralError(`error while creating user`))
+    }
 };
 
-exports.logIn = async (req,res) =>{
+exports.logIn = async (req, res, next) => {
     console.log(req.body);
 
     let username = req.body.username;
     let password = req.body.password;
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
-        res.statusCode = 400;
-        res.json({error: true, message: 'Please Enter All Field'});
-    }
-    else{
-        await User.find(username,password, (err, user) => {
-            if(err){
-                res.statusCode = 401;
-                res.json({error: true, message:err});
+    try {
+        await User.find(username, password, (err, user) => {
+
+            if (err) {
+                next(new BadRequest(err));
             }
-            else if(user.length === 0){
-                res.statusCode = 401;
-                res.json({error: true, message:'Your credantial doesn\'t match'});
+            else if (user.length === 0) {
+                next(new UnAuthorized('Your credantial doesn\'t match'))
             }
-            else{
-                res.statusCode = 200;
-                const token = Authentication.getToken({id: user[0].id})
-                console.log(token);
-                res.json({error: false, message:'Login Successful',token: token});
+            else {
+                console.log('hi')
+                const token = Authentication.getToken({ id: user[0].id })
+                next(new GeneralResponse('user successfully login', {
+                    token: token
+                }, config.HTTP_SUCCESS));
+                console.log('hi')
+
             }
         });
     }
+    catch (err) {
+        next(new GeneralError(`User login failure`))
+    }
 }
 
-exports.editUser = async (req,res) => {
+exports.editUser = async (req, res) => {
     const id = req.params.id;
     const data = req.body;
     await User.update(id, data, (err, user) => {
         if (err) {
             res.statusCode = 400;
-            res.json({ error: true, message: err  });
-        } 
+            res.json({ error: true, message: err });
+        }
         else {
             res.statusCode = 200;
             console.log('user', user);
@@ -87,71 +92,85 @@ exports.editUser = async (req,res) => {
 }
 
 
-exports.changePassword = (req,res) => {
+exports.changePassword = async (req, res, next) => {
     const id = req.params.id;
     const oldPassword = req.body.oldPassword;
     const password = req.body;
-
-    User.findUser(id, (err,user)=> {
-        if(err){
-            res.statusCode = 401;
-            res.json({error: true, message:err});
-        }
-        else if(user.length === 0){
-            res.statusCode = 400;
-            res.json({error: true, message:`User Doesn't exixt`});
-        }
-        else{            
-            if(user[0].password === oldPassword){
-                User.changePassword(id, password, (err, user) => {
-                    if (err) {
-                        res.statusCode = 400;
-                        res.json({ error: true, message: err  });
-                    } 
-                    else {
-                        res.statusCode = 200;
-                        res.json({error: true, message:'Password update', data: user});
-                    }
-                })
+    try {
+        await User.findUser(id, (err, user) => {
+            if (err) {
+                next(new NotFound(err))
             }
-            else{
-                console.log('Old Password Are not match');
-                res.statusCode = 400;
-                res.json({ error: true, message: 'Old Password Are not match'  });
+            else if (user.length === 0) {
+                next(new NotFound(`User Doesn't exixt`))
             }
-        }
-    })
+            else {
+                if (user[0].password === oldPassword) {
+                    User.changePassword(id, password, (err, user) => {
+                        if (err) {
+                            next(new NotFound(err))
+                        }
+                        else {
+                            next(new GeneralResponse('Password update successfully!'))
+                        }
+                    })
+                }
+                else {
+                    console.log('Old Password Are not match');
+                    next(new BadRequest('Old password are not match'))
+                }
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError(`error while changing password`))
+    }
 }
 
-exports.forgotPassword = (req,res) => {
+exports.forgotPassword = async (req, res, next) => {
 
     const id = req.params.id;
     const data = req.body;
-    console.log(data)
-    User.changePassword(id, data, (err, user) => {
-        if (err) {
-            res.statusCode = 400;
-            res.json({ error: true, message: err  });
-        } 
-        else {
-            res.statusCode = 200;
-            res.json({error: true, message:'Password update', data: user});
-        }
-    });
+    // console.log(data)
+    try {
+        await User.findUser(id, (err, user) => {
+            if (err) {
+                next(new NotFound(err))
+            }
+            else if (user.length === 0) {
+                next(new NotFound(`User Doesn't exixt`))
+            }
+            else {
+                User.changePassword(id, data, (err, user) => {
+                    if (err) {
+                        next(new BadRequest(err))
+                    }
+                    else {
+                        next(new GeneralResponse('Password update successfully!'))
+                    }
+                })
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError(`error while changing password`))
+    }
 
 }
 
-exports.profile = (req,res) => {
+exports.profile = async (req, res, next) => {
     const id = req.user.id;
     console.log(id)
-    User.profile(id, (err, user) => {
-        if (err) {
-            res.statusCode = 400;
-            res.json({ error: true, message: err  });
-        } 
-        else {
-            res.statusCode = 200;
-            res.json({error: true, message:'Data Found', data: user});
-        }
-    })
+    try {
+        await User.profile(id, (err, user) => {
+            if (err) {
+                next(new NotFound(err))
+            }
+            else {
+                next(new GeneralResponse('User', user))
+            }
+        })
+    } catch (err) {
+        next(new GeneralError(`error while getting data`))
+    }
 }

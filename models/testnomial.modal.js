@@ -1,4 +1,4 @@
-const dbConn = require('../middleware/db.config');
+const dbConn = require('../dbconnection/db.config');
 
 const Testnomial = function(testnomial){
     this.clientName = testnomial.clientName;
@@ -60,6 +60,19 @@ Testnomial.update = (id, testnomial,callback) => {
 Testnomial.delete = (id, callback) => {
     let sql = `DELETE FROM testnomial WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
+        if(err){
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
+Testnomial.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM testnomial WHERE id IN (?)`
+    dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);

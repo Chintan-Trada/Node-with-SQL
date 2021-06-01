@@ -7,14 +7,14 @@ exports.getToken = (user) => {
 
 exports.verifyJWT = (req,res, next) => {
     const authHeader = req.headers['authorization'] || req.headers['x-access-token'];
-    console.log(authHeader);
+    // console.log(authHeader);
 
     if (authHeader) {
         var token = authHeader;
         if (token.startsWith('Bearer ')) {       
             token = token.slice(7, token.length); 
         }
-        console.log(token)
+        // console.log(token)
         jwt.verify(token, config.SECRET_KEY, (err, user) => {
             if (err) {
                 return res.status(403).json({

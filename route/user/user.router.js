@@ -4,22 +4,25 @@ const router = express.Router();
 const userController = require('../../controller/userController');
 const Authentication = require('../../middleware/authentication');
 
+const {validator} = require('../../validation/validate');
+const Validation = require('../../validation/validation');
+
 //Signup
 router.get('/user', userController.find);
-router.post('/signup', userController.signUp);
+router.post('/signup',validator.body(Validation.userValidation),  userController.signUp);
 
 //Login
-router.post('/login', userController.logIn);
+router.post('/login',validator.body(Validation.loginValidation),  userController.logIn);
 
 //Profile
 router.get('/profile', Authentication.verifyJWT, userController.profile);
-router.put('/user/:id', Authentication.verifyJWT, userController.editUser);
+router.put('/user/:id', Authentication.verifyJWT,validator.body(Validation.userValidation),  userController.editUser);
 
 //Change Password
-router.put('/changePassword/:id', Authentication.verifyJWT, userController.changePassword);
+router.put('/changePassword/:id', Authentication.verifyJWT,validator.body(Validation.changePasswordValidation),  userController.changePassword);
 
 //Forgot Password
-router.put('/forgotPassword/:id', userController.forgotPassword);
+router.put('/forgotPassword/:id', validator.body(Validation.forgotpasswordValidation), userController.forgotPassword);
 
 
 module.exports = router;

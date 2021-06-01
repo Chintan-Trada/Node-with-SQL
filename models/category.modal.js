@@ -1,4 +1,4 @@
-const dbConn = require('../middleware/db.config');
+const dbConn = require('../dbconnection/db.config');
 
 const Category = function(category){
     this.categoryName = category.categoryName;
@@ -60,6 +60,19 @@ Category.update = (id, category,callback) => {
 Category.delete = (id, callback) => {
     let sql = `DELETE FROM category WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
+        if(err){
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
+Category.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM category WHERE id IN (?)`
+    dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);

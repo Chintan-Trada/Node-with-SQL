@@ -8,13 +8,16 @@ const {validator} = require('../../validation/validate');
 const Validation = require('../../validation/validation');
 
 
+
 router.get('/', Authentication.verifyJWT, categoryRouter.findAll);
-router.post('/', validator.body(Validation.categoryValidation), categoryRouter.create);
+router.post('/',  Authentication.verifyJWT, validator.body(Validation.categoryValidation), categoryRouter.create);
 
 router.get('/:id' , Authentication.verifyJWT, categoryRouter.findById)
 
-router.put('/:id', Authentication.verifyJWT, categoryRouter.update);
+router.put('/:id', Authentication.verifyJWT, validator.body(Validation.categoryValidation), categoryRouter.update);
 
 router.delete('/:id', Authentication.verifyJWT, categoryRouter.delete);
+
+router.delete('/', Authentication.verifyJWT, categoryRouter.multipleDelete);
 
 module.exports = router;

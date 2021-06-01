@@ -1,4 +1,4 @@
-const dbConn = require('../middleware/db.config');
+const dbConn = require('../dbconnection/db.config');
 
 const Enquiry = function(enquiry){
     this.firstname = enquiry.firstname;
@@ -63,6 +63,19 @@ Enquiry.update = (id, enquiry,callback) => {
 Enquiry.delete = (id, callback) => {
     let sql = `DELETE FROM enquiry WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
+        if(err){
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
+        }
+    })
+}
+
+Enquiry.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM enquiry WHERE id IN (?)`
+    dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);

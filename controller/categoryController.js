@@ -1,96 +1,141 @@
+const { GeneralError, NotFound, BadRequest } = require('../middleware/error');
+const { GeneralResponse } = require('../middleware/response');
 const Category = require('../models/category.modal');
 
-exports.findAll = (req,res) => {
-    Category.findAll((err,category) => {
-        if(err){
-            res.statusCode = 400;
-            res.json({error: true, message: err})
-        }
-        else if(category.length === 0){
-            res.statusCode = 400;
-            res.json({error: true, message:`No data are insertet`});
-        }
-        else{
-            console.log(category)
-            res.statusCode = 200;
-            res.json({err: false, message: 'Data Found', data: category})
-        }
-    }) 
-}
 
-exports.findById = (req,res) => {
-    const id  = req.params.id;
-
-    Category.finById(id, (err, category) => {
-        if(err){
-            res.statusCode = 401;
-            res.json({error: true, message: err});
-        }
-        else if(category.length === 0){
-            res.statusCode = 401;
-            res.json({error: true, message: 'Data not found'});
-        }
-        else{
-            console.log(category.length)
-            res.statusCode = 200;
-            res.json({error: false, message: 'Data Found', data: category})
-        }
-    })
-}
-
-exports.create = (req,res) => {
-    const new_category = new Category(req.body);
-
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
-        res.statusCode = 400;
-        res.json({error: true, message: 'Please fill all field..!'});
-    }
-    else{
-        Category.create(new_category, (err, category) => {
-            if(err){
-                res.statusCode = 401;
-                res.json({error: true, message: err});
+exports.findAll = async (req, res, next) => {
+    try {
+        await Category.findAll((err, category) => {
+            if (err) {
+                next(new NotFound('Not found category'))
             }
-            else{
-                res.statusCode = 200;
-                res.json({err: true, message:'Data add successfully', data: category})
+            else if (category.length === 0) {
+                next(new NotFound('Not found category'))
+            }
+            else {
+                // console.log(category)
+                next(new GeneralResponse('Category', category))
             }
         })
     }
+    catch (err) {
+        next(new GeneralError('error while getting category list'))
+    }
+
 }
 
-exports.update = (req,res) => {
-    const new_category = new Category(req.body);
-    const id  = req.params.id;
-
-    if(req.body.constructor === Object && Object.keys(req.body).length === 0){
-        res.statusCode = 400;
-        res.json({err: true, message:'Please enter all field'});
-    }
-    else{
-        Category.update(id, new_category, (err, category) => {
-            if(err){
-                res.statusCode = 401;
-                res.json({error: true, message: err});
-            }
-            else{
-                res.statusCode = 200;
-                res.json({error: false, message:'Data Update Successfully', data: category});
-            }
-        })
-    }
-}
-
-exports.delete = (req,res) => {
+exports.findById = async (req, res, next) => {
     const id = req.params.id;
-    Category.delete(id, (err, category) => {
-        if(err){
-            res.statusCode = 401;
-            res.json({error: true, message: err});
-        }
-        else{
-            res.statusCode = 200;
-            res.json({error: false, message: 'Data delete successfully', data: category})
-        }
-    })
+    try {
+        await Category.finById(id, (err, category) => {
+            if (err) {
+                next(new NotFound(err))
+            }
+            else if (category.length === 0) {
+                next(new NotFound(`Not found category with this id = ${id}`))
+            }
+            else {
+                // console.log(category.length)
+                next(new GeneralResponse('Category', category))
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError(`error while getting ${id} category`))
+    }
+
+}
+
+exports.create = async (req, res, next) => {
+    const new_category = new Category(req.body);
+
+    try {
+        await Category.create(new_category, (err, category) => {
+            if (err) {
+                next(new BadRequest(err));
+            }
+            else {
+                next(new GeneralResponse('Category', category));
+            }
+        })
+
+    }
+    catch (err) {
+        next(new GeneralError(`error while post data`))
+    }
+
+
+}
+
+exports.update = async (req, res, next) => {
+    const new_category = new Category(req.body);
+    const id = req.params.id;
+    try {
+        await Category.finById(id, (err, category) => {
+            if (err) {
+                next(new NotFound(err))
+            }
+            else if (category.length === 0) {
+                next(new NotFound(`Data not found with this id = ${id}`))
+            }
+            else {
+                Category.update(id, new_category, (err, category) => {
+                    if (err) {
+                        next(new BadRequest(err))
+                    }
+                    else {
+                        next(new GeneralResponse('Data update successfully!'))
+                    }
+                })
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError(`error while updating data`))
+    }    
+}
+
+exports.delete = async (req, res, next) => {
+    const id = req.params.id;
+    try {
+        await Category.finById(id, (err, category) => {
+            if (err) {
+                next(new NotFound(err))
+            }
+            else if (category.length === 0) {
+                next(new NotFound(`Data not found with this id = ${id}`))
+            }
+            else {
+                Category.delete(id, (err, category) => {
+                    if (err) {
+                        next(new NotFound(err))
+                    }
+                    else {
+                        next(new GeneralResponse('Data delete successfully'))
+                    }
+                })
+            }
+        })
+    }
+    catch (err) {
+        next(new GeneralError(`error while deleting data`))
+    }
+    
+}
+
+exports.multipleDelete = async (req,res,next) => {
+    var id = await req.body.id;
+    try{
+        Category.multipleDelete(id,(err,category) => {
+            if(err){
+                next(new NotFound(err))
+            }
+            else{
+                next(new GeneralResponse('Data delete successfully'))
+            }
+        })
+    }
+    catch(err){
+        next(new GeneralError(`error while deleting data`))
+    }
 }

@@ -1,4 +1,4 @@
-const dbConn = require('../middleware/db.config');
+const dbConn = require('../dbconnection/db.config');
 
 const Portfolio = function(portfolio){
     this.projectName = portfolio.projectName,
@@ -69,6 +69,19 @@ Portfolio.delete = (id, callback) => {
         }
         else{
             callback(null, res);
+        }
+    })
+}
+
+Portfolio.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM portfolio WHERE id IN (?)`
+    dbConn.query(sql,[id], (err,res) => {
+        if(err){
+            console.log('Error:', err.sqlMessage);
+            callback(err.sqlMessage, null);
+        }
+        else{
+            callback(null, res)
         }
     })
 }
