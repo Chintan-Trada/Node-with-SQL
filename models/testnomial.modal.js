@@ -3,6 +3,8 @@ const dbConn = require('../dbconnection/db.config');
 const Testnomial = function(testnomial){
     this.clientName = testnomial.clientName;
     this.feedback = testnomial.feedback;
+    this.image = testnomial.image
+
 };
 
 Testnomial.findAll = (callback) => {
@@ -31,9 +33,12 @@ Testnomial.findById = (id, callback) => {
     })
 }
 
-Testnomial.create = (testnomial,callback) =>{
-    let sql = `INSERT INTO testnomial set ?`
-    dbConn.query(sql, testnomial, (err,res) => {
+Testnomial.create = (testnomial,image,callback) =>{
+    console.log(testnomial)
+    console.log("image", JSON.stringify(image))
+
+    let sql = `INSERT INTO testnomial (clientName,feedback,image) VALUES (?,?,?)`
+    dbConn.query(sql, [testnomial.clientName,testnomial.feedback,JSON.stringify(image)], (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -44,9 +49,9 @@ Testnomial.create = (testnomial,callback) =>{
     });
 };
 
-Testnomial.update = (id, testnomial,callback) => {
-    let sql = `UPDATE testnomial SET clientName = ?, feedback = ? WHERE id= ?`;
-    dbConn.query(sql, [testnomial.clientName, testnomial.feedback, id], (err, res) => {
+Testnomial.update = (id, testnomial,image,callback) => {
+    let sql = `UPDATE testnomial SET clientName = ?, feedback = ? image =? WHERE id= ?`;
+    dbConn.query(sql, [testnomial.clientName, testnomial.feedback, JSON.stringify(image), id], (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);

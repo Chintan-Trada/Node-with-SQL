@@ -47,7 +47,7 @@ exports.findById = async (req, res, next) => {
 }
 
 exports.create = async (req, res, next) => {
-    const new_category = new Category(req.body);
+    const new_category = await new Category(req.body);
 
     try {
         await Category.create(new_category, (err, category) => {
@@ -68,7 +68,7 @@ exports.create = async (req, res, next) => {
 }
 
 exports.update = async (req, res, next) => {
-    const new_category = new Category(req.body);
+    const new_category = await new Category(req.body);
     const id = req.params.id;
     try {
         await Category.finById(id, (err, category) => {

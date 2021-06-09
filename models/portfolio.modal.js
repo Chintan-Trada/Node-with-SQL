@@ -4,6 +4,7 @@ const Portfolio = function(portfolio){
     this.projectName = portfolio.projectName,
     this.projectCategory = portfolio.projectCategory,
     this.discription = portfolio.discription
+    this.image = portfolio.image
 };
 
 Portfolio.findAll = (callback) => {
@@ -32,9 +33,9 @@ Portfolio.findById = (id,callback) => {
     })
 };
 
-Portfolio.create = (portfolio,callback) => {
-    let sql = `INSERT INTO portfolio set  ? `
-    dbConn.query(sql, portfolio, (err,res) => {
+Portfolio.create = (portfolio,file,callback) => {
+    let sql = `INSERT INTO portfolio (projectName,projectCategory,discription,image) VALUES (?,?,?,?)`
+    dbConn.query(sql, [portfolio.projectName,portfolio.projectCategory,portfolio.discription,file], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -45,11 +46,10 @@ Portfolio.create = (portfolio,callback) => {
     })
 };
 
-Portfolio.update = (id, portfolio, callback) => {
-    let sql = `UPDATE portfolio SET projectName= ?, projectCategory=?, discription=? WHERE id =?`;
-    // let sql = `UPDATE category SET categoryName = ?, discription = ? WHERE id= ?`;
+Portfolio.update = (id, portfolio,file, callback) => {
+    let sql = `UPDATE portfolio SET projectName= ?, projectCategory=?, discription=?, image=? WHERE id =?`;
 
-    dbConn.query(sql,[portfolio.projectName, portfolio.projectCategory, portfolio.discription, id], (err,res) => {
+    dbConn.query(sql,[portfolio.projectName, portfolio.projectCategory, portfolio.discription,file, id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);

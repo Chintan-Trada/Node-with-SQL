@@ -27,7 +27,7 @@ exports.find = async (req, res, next) => {
 
 exports.signUp = async (req, res, next) => {
 
-    const new_user = new User(req.body);
+    const new_user =await new User(req.body);
 
     try {
         await User.create(new_user, (err, user) => {
@@ -76,7 +76,7 @@ exports.logIn = async (req, res, next) => {
 
 exports.editUser = async (req, res) => {
     const id = req.params.id;
-    const data = req.body;
+    const data = await req.body;
     await User.update(id, data, (err, user) => {
         if (err) {
             res.statusCode = 400;
@@ -130,7 +130,7 @@ exports.changePassword = async (req, res, next) => {
 exports.forgotPassword = async (req, res, next) => {
 
     const id = req.params.id;
-    const data = req.body;
+    const data = await req.body;
     // console.log(data)
     try {
         await User.findUser(id, (err, user) => {

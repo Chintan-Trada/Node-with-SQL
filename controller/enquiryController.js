@@ -42,7 +42,7 @@ catch (err) {
 };
 
 exports.create = async (req, res, next) => {
-    const new_enquiry = new Enquiry(req.body);
+    const new_enquiry = await new Enquiry(req.body);
 
     try {
         await Enquiry.create(new_enquiry, (err, enquiry) => {
@@ -60,7 +60,7 @@ exports.create = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-    const update_enquiry = new Enquiry(req.body);
+    const update_enquiry = await new Enquiry(req.body);
     const id = req.params.id;
 
     try {

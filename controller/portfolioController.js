@@ -1,6 +1,8 @@
+
 const { GeneralError, NotFound, BadRequest } = require('../middleware/error');
 const { GeneralResponse } = require('../middleware/response');
 const Portfolio = require('../models/portfolio.modal');
+
 
 exports.findAll = async (req, res, next) => {
     try {
@@ -42,10 +44,11 @@ exports.findById = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-    const new_portfolio = new Portfolio(req.body);
-
+        
+    const new_portfolio = await new Portfolio(req.body);
+    const new_portfolio_file = await req.file.filename;
     try {
-        await Portfolio.create(new_portfolio, (err, portfolio) => {
+        await Portfolio.create(new_portfolio,new_portfolio_file, (err, portfolio) => {
             if (err) {
                 next(new BadRequest(err));
             }
@@ -60,7 +63,9 @@ exports.create = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-    const update_portfolio = new Portfolio(req.body);
+    const update_portfolio =await new Portfolio(req.body);
+    const update_portfolio_file =await req.file.filename;
+
     const id = req.params.id;
 
     try {
@@ -72,7 +77,7 @@ exports.update = async (req, res, next) => {
                 next(new NotFound(`Not found portfolio with this id = ${id}`))
             }
             else {
-                Portfolio.update(id, update_portfolio, (err, portfolio) => {
+                Portfolio.update(id, update_portfolio,update_portfolio_file, (err, portfolio) => {
                     if (err) {
                         next(new BadRequest(err))
                     }
