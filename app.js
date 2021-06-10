@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const config = require('./api/Service/config.js');
+const config = require('./api/service/config.js');
 
 const handleResponse  = require('./api/helper/response.helper');
 const JoiErrors = require('./api/helper/error.helper');

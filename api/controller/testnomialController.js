@@ -1,5 +1,5 @@
-const { GeneralError, NotFound, BadRequest } = require('../Service/error');
-const { GeneralResponse } = require('../Service/response');
+const { GeneralError, NotFound, BadRequest } = require('../service/error');
+const { GeneralResponse } = require('../service/response');
 const Testnomial = require('../models/testnomial.modal');
 
 exports.findAll = async (req, res, next) => {

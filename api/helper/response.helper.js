@@ -1,6 +1,6 @@
 
-const { GeneralResponse } = require('../Service/response');
-const config = require('../Service/config');
+const { GeneralResponse } = require('../service/response');
+const config = require('../service/config');
 
 const handleResponse = (response, req, res, next) => {
     if (response instanceof GeneralResponse) {

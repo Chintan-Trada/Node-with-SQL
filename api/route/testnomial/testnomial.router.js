@@ -8,7 +8,7 @@ const Authentication = require('../../helper/authentication');
 const {validator} = require('../../helper/validate');
 const Validation = require('../../validation/validation');
 
-const {upload_multiple} = require('../../Service/multer');
+const {upload_multiple} = require('../../service/multer');
 
 
 

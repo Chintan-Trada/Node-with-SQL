@@ -1,10 +1,10 @@
-const { GeneralError, NotFound, BadRequest, UnAuthorized } = require('../Service/error');
-const { GeneralResponse } = require('../Service/response');
+const { GeneralError, NotFound, BadRequest, UnAuthorized } = require('../service/error');
+const { GeneralResponse } = require('../service/response');
 
 const User = require('../models/user.modal');
 
 const Authentication = require('../helper/authentication');
-const config = require('../Service/config')
+const config = require('../service/config')
 
 exports.find = async (req, res, next) => {
     try {

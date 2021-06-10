@@ -8,7 +8,7 @@ const {verifyJWT} = require('../../helper/authentication');
 const {validator} = require('../../helper/validate');
 const Validation = require('../../validation/validation');
 
-const {upload_single} = require('../../Service/multer');
+const {upload_single} = require('../../service/multer');
 
 
 router.get('/', verifyJWT, portfolioController.findAll);
