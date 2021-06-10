@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const enquiryRouter = require('../../controller/enquiryController');
-const Authentication = require('../../middleware/authentication');
+const Authentication = require('../../helper/authentication');
 
-const {validator} = require('../../validation/validate');
+const {validator} = require('../../helper/validate');
 const Validation = require('../../validation/validation');
 
 router.get('/', Authentication.verifyJWT, enquiryRouter.findAll);

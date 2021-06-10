@@ -1,5 +1,5 @@
-const { GeneralError, BadRequest } = require('../middleware/error');
-const config = require("../middleware/config");
+const { GeneralError, BadRequest } = require('../Service/error');
+const config = require("../Service/config");
 
 const handleErrors = (err, req, res, next) => {
   if (err instanceof GeneralError) {

@@ -1,6 +1,6 @@
 
-const { GeneralError, NotFound, BadRequest } = require('../middleware/error');
-const { GeneralResponse } = require('../middleware/response');
+const { GeneralError, NotFound, BadRequest } = require('../Service/error');
+const { GeneralResponse } = require('../Service/response');
 const Portfolio = require('../models/portfolio.modal');
 
 

@@ -1,15 +1,14 @@
-const dbConn = require('../dbconnection/db.config');
+const dbConn = require('../helper/db.config');
 
-const Enquiry = function(enquiry){
-    this.firstname = enquiry.firstname;
-    this.lastname = enquiry.lastname;
-    this.email = enquiry.email;
-    this.mobileNo = enquiry.mobileNo;
-    this.comment = enquiry.comment;
+const Testnomial = function(testnomial){
+    this.clientName = testnomial.clientName;
+    this.feedback = testnomial.feedback;
+    this.image = testnomial.image
+
 };
 
-Enquiry.findAll = (callback) => {
-    let sql = `SELECT * FROM enquiry`;
+Testnomial.findAll = (callback) => {
+    let sql = `SELECT * FROM testnomial`;
     dbConn.query(sql, (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
@@ -21,8 +20,8 @@ Enquiry.findAll = (callback) => {
     })
 }
 
-Enquiry.findById = (id, callback) => {
-    let sql = `SELECT * FROM enquiry WHERE id = ?`;
+Testnomial.findById = (id, callback) => {
+    let sql = `SELECT * FROM testnomial WHERE id = ?`;
     dbConn.query(sql, id, (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -34,9 +33,12 @@ Enquiry.findById = (id, callback) => {
     })
 }
 
-Enquiry.create = (enquiry,callback) =>{
-    let sql = `INSERT INTO enquiry set ?`
-    dbConn.query(sql, enquiry, (err,res) => {
+Testnomial.create = (testnomial,image,callback) =>{
+    console.log(testnomial)
+    console.log("image", JSON.stringify(image))
+
+    let sql = `INSERT INTO testnomial (clientName,feedback,image) VALUES (?,?,?)`
+    dbConn.query(sql, [testnomial.clientName,testnomial.feedback,JSON.stringify(image)], (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -47,9 +49,9 @@ Enquiry.create = (enquiry,callback) =>{
     });
 };
 
-Enquiry.update = (id, enquiry,callback) => {
-    let sql = `UPDATE enquiry SET firstname = ?, lastname = ?, email = ?, mobileNo = ?, comment = ? WHERE id= ?`;
-    dbConn.query(sql, [enquiry.firstname, enquiry.lastname, enquiry.email, enquiry.mobileNo, enquiry.comment, id], (err, res) => {
+Testnomial.update = (id, testnomial,image,callback) => {
+    let sql = `UPDATE testnomial SET clientName = ?, feedback = ? image =? WHERE id= ?`;
+    dbConn.query(sql, [testnomial.clientName, testnomial.feedback, JSON.stringify(image), id], (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -60,8 +62,8 @@ Enquiry.update = (id, enquiry,callback) => {
     })
 }
 
-Enquiry.delete = (id, callback) => {
-    let sql = `DELETE FROM enquiry WHERE id = ?`;
+Testnomial.delete = (id, callback) => {
+    let sql = `DELETE FROM testnomial WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -73,8 +75,8 @@ Enquiry.delete = (id, callback) => {
     })
 }
 
-Enquiry.multipleDelete = (id, callback) => {
-    let sql = `DELETE FROM enquiry WHERE id IN (?)`
+Testnomial.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM testnomial WHERE id IN (?)`
     dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -86,4 +88,4 @@ Enquiry.multipleDelete = (id, callback) => {
     })
 }
 
-module.exports = Enquiry;
+module.exports = Testnomial;

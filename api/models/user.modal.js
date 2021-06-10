@@ -1,4 +1,4 @@
-var dbConn = require('../dbconnection/db.config');
+var dbConn = require('../helper/db.config');
 
 var User = function(user){
     this.username = user.username,

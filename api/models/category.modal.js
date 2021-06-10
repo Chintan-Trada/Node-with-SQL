@@ -1,14 +1,12 @@
-const dbConn = require('../dbconnection/db.config');
+const dbConn = require('../helper/db.config');
 
-const Testnomial = function(testnomial){
-    this.clientName = testnomial.clientName;
-    this.feedback = testnomial.feedback;
-    this.image = testnomial.image
-
+const Category = function(category){
+    this.categoryName = category.categoryName;
+    this.discription = category.discription;
 };
 
-Testnomial.findAll = (callback) => {
-    let sql = `SELECT * FROM testnomial`;
+Category.findAll = (callback) => {
+    let sql = `SELECT * FROM category`;
     dbConn.query(sql, (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
@@ -20,8 +18,8 @@ Testnomial.findAll = (callback) => {
     })
 }
 
-Testnomial.findById = (id, callback) => {
-    let sql = `SELECT * FROM testnomial WHERE id = ?`;
+Category.finById = (id, callback) => {
+    let sql = `SELECT * FROM category WHERE id = ?`;
     dbConn.query(sql, id, (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -33,12 +31,9 @@ Testnomial.findById = (id, callback) => {
     })
 }
 
-Testnomial.create = (testnomial,image,callback) =>{
-    console.log(testnomial)
-    console.log("image", JSON.stringify(image))
-
-    let sql = `INSERT INTO testnomial (clientName,feedback,image) VALUES (?,?,?)`
-    dbConn.query(sql, [testnomial.clientName,testnomial.feedback,JSON.stringify(image)], (err,res) => {
+Category.create = (category,callback) =>{
+    let sql = `INSERT INTO category set ?`
+    dbConn.query(sql, category, (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -49,9 +44,9 @@ Testnomial.create = (testnomial,image,callback) =>{
     });
 };
 
-Testnomial.update = (id, testnomial,image,callback) => {
-    let sql = `UPDATE testnomial SET clientName = ?, feedback = ? image =? WHERE id= ?`;
-    dbConn.query(sql, [testnomial.clientName, testnomial.feedback, JSON.stringify(image), id], (err, res) => {
+Category.update = (id, category,callback) => {
+    let sql = `UPDATE category SET categoryName = ?, discription = ? WHERE id= ?`;
+    dbConn.query(sql, [category.categoryName, category.discription, id], (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -62,8 +57,8 @@ Testnomial.update = (id, testnomial,image,callback) => {
     })
 }
 
-Testnomial.delete = (id, callback) => {
-    let sql = `DELETE FROM testnomial WHERE id = ?`;
+Category.delete = (id, callback) => {
+    let sql = `DELETE FROM category WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -75,8 +70,8 @@ Testnomial.delete = (id, callback) => {
     })
 }
 
-Testnomial.multipleDelete = (id, callback) => {
-    let sql = `DELETE FROM testnomial WHERE id IN (?)`
+Category.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM category WHERE id IN (?)`
     dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -88,4 +83,4 @@ Testnomial.multipleDelete = (id, callback) => {
     })
 }
 
-module.exports = Testnomial;
+module.exports = Category;

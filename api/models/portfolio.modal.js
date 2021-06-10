@@ -1,4 +1,4 @@
-const dbConn = require('../dbconnection/db.config');
+const dbConn = require('../helper/db.config');
 
 const Portfolio = function(portfolio){
     this.projectName = portfolio.projectName,

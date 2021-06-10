@@ -1,10 +1,10 @@
-const { GeneralError, NotFound, BadRequest, UnAuthorized } = require('../middleware/error');
-const { GeneralResponse } = require('../middleware/response');
+const { GeneralError, NotFound, BadRequest, UnAuthorized } = require('../Service/error');
+const { GeneralResponse } = require('../Service/response');
 
 const User = require('../models/user.modal');
 
-const Authentication = require('../middleware/authentication');
-const config = require('../middleware/config')
+const Authentication = require('../helper/authentication');
+const config = require('../Service/config')
 
 exports.find = async (req, res, next) => {
     try {

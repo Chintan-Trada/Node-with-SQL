@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const config = require('./middleware/config.js');
+const config = require('./api/Service/config.js');
 
-const handleResponse  = require('./helper/response.helper');
-const JoiErrors = require('./helper/error.helper');
+const handleResponse  = require('./api/helper/response.helper');
+const JoiErrors = require('./api/helper/error.helper');
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || config.PORT;
 
 app.get('/', (req, res) => res.send('Hello World!'))
-app.use('/', require('./route/route'));
+app.use('/', require('./api/route/route'));
 
 app.use(handleResponse);
 

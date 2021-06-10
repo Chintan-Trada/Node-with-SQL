@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 
 
 module.exports = {
-  categoryValidation: Joi.object({
+  categoryValidation: Joi.object().keys({
     categoryName: Joi.string().required().empty().messages({
       "string.base": `first name should be a type of 'text'`,
       "string.empty": `Category is required.`,
@@ -14,24 +14,25 @@ module.exports = {
       "any.required": `Discription is required.`,
     })
   }),
-  portfolioValidation: Joi.object({
-    projectName: Joi.string().required().empty().messages({
+  portfolioValidation: Joi.object().keys({
+    projectName: Joi.string().required().messages({
       "string.base": `Project name should be a type of 'text'`,
       "string.empty": `Project name is required.`,
       "any.required": `Project name is required.`,
     }),
-    projectCategory: Joi.string().required().empty().messages({
+    projectCategory: Joi.string().required().messages({
       "string.base": `Project category should be a type of 'text'`,
       "string.empty": `Project category is required.`,
       "any.required": `Project category is required.`,
     }),
-    discription: Joi.string().required().empty().messages({
+    discription: Joi.string().required().messages({
       "string.base": `Discription should be a type of 'text'`,
       "string.empty": `Discription is required.`,
       "any.required": `Discription is required.`,
-    })
+    }),
+    image: Joi.optional()
   }),
-  testnomialValidation: Joi.object({
+  testnomialValidation: Joi.object().keys({
     clientName: Joi.string().required().empty().messages({
       "string.base": `Client name should be a type of 'text'`,
       "string.empty": `Client name is required.`,
@@ -43,7 +44,7 @@ module.exports = {
       "any.required": `Feedback is required.`,
     })
   }),
-  enquiryValidation: Joi.object({
+  enquiryValidation: Joi.object().keys({
     firstname: Joi.string().required().empty().messages({
       "string.base": `Firstname should be a type of 'text'.`,
       "string.empty": `Firstname is required`,
@@ -71,15 +72,16 @@ module.exports = {
       "any.required": `Comment is required.`
     })
   }),
-  userValidation: Joi.object({
+  userValidation: Joi.object().keys({
     username: Joi.string().required().empty().messages({
       "string.base": `Username should be a type of 'text'`,
       "string.empty": `Username is required.`,
       "any.required": `Username is required.`,
     }),
-    password: Joi.string().required().empty().messages({
+    password: Joi.string().required().empty().min(6).messages({
       "string.base": `Password should be a type of 'text'`,
       "string.empty": `Password is required.`,
+      "string.min": `Password should be of minimum 6 characters.`,
       "any.required": `Password is required.`,
     }) ,
     firstname: Joi.string().required().empty().messages({
@@ -104,7 +106,7 @@ module.exports = {
       "any.required": `Email is required.`,
     })  
   }),
-  loginValidation: Joi.object({
+  loginValidation: Joi.object().keys({
     username: Joi.string().required().empty().messages({
       "string.base": `Username should be a type of 'text'`,
       "string.empty": `Username is required.`,
@@ -117,7 +119,7 @@ module.exports = {
       "any.required": `Password is required.`,
     })
   }),
-  forgotpasswordValidation: Joi.object({
+  forgotpasswordValidation: Joi.object().keys({
     password: Joi.string().required().empty().min(6).messages({
       "string.base": `Password should be a type of 'text'`,
       "string.empty": `Password is required.`,
@@ -132,7 +134,7 @@ module.exports = {
       "any.required": `Confirm password is required.`,
     })
   }),
-  changePasswordValidation: Joi.object({
+  changePasswordValidation: Joi.object().keys({
     oldPassword: Joi.string().required().empty().min(6).messages({
       "string.base": `Old password should be a type of 'text'`,
       "string.empty": `Old password is required.`,

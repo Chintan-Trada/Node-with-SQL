@@ -1,12 +1,15 @@
-const dbConn = require('../dbconnection/db.config');
+const dbConn = require('../helper/db.config');
 
-const Category = function(category){
-    this.categoryName = category.categoryName;
-    this.discription = category.discription;
+const Enquiry = function(enquiry){
+    this.firstname = enquiry.firstname;
+    this.lastname = enquiry.lastname;
+    this.email = enquiry.email;
+    this.mobileNo = enquiry.mobileNo;
+    this.comment = enquiry.comment;
 };
 
-Category.findAll = (callback) => {
-    let sql = `SELECT * FROM category`;
+Enquiry.findAll = (callback) => {
+    let sql = `SELECT * FROM enquiry`;
     dbConn.query(sql, (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
@@ -18,8 +21,8 @@ Category.findAll = (callback) => {
     })
 }
 
-Category.finById = (id, callback) => {
-    let sql = `SELECT * FROM category WHERE id = ?`;
+Enquiry.findById = (id, callback) => {
+    let sql = `SELECT * FROM enquiry WHERE id = ?`;
     dbConn.query(sql, id, (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -31,9 +34,9 @@ Category.finById = (id, callback) => {
     })
 }
 
-Category.create = (category,callback) =>{
-    let sql = `INSERT INTO category set ?`
-    dbConn.query(sql, category, (err,res) => {
+Enquiry.create = (enquiry,callback) =>{
+    let sql = `INSERT INTO enquiry set ?`
+    dbConn.query(sql, enquiry, (err,res) => {
         if(err){
             console.log('Error', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -44,9 +47,9 @@ Category.create = (category,callback) =>{
     });
 };
 
-Category.update = (id, category,callback) => {
-    let sql = `UPDATE category SET categoryName = ?, discription = ? WHERE id= ?`;
-    dbConn.query(sql, [category.categoryName, category.discription, id], (err, res) => {
+Enquiry.update = (id, enquiry,callback) => {
+    let sql = `UPDATE enquiry SET firstname = ?, lastname = ?, email = ?, mobileNo = ?, comment = ? WHERE id= ?`;
+    dbConn.query(sql, [enquiry.firstname, enquiry.lastname, enquiry.email, enquiry.mobileNo, enquiry.comment, id], (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
             callback(err.sqlMessage, null);
@@ -57,8 +60,8 @@ Category.update = (id, category,callback) => {
     })
 }
 
-Category.delete = (id, callback) => {
-    let sql = `DELETE FROM category WHERE id = ?`;
+Enquiry.delete = (id, callback) => {
+    let sql = `DELETE FROM enquiry WHERE id = ?`;
     dbConn.query(sql, id, (err, res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -70,8 +73,8 @@ Category.delete = (id, callback) => {
     })
 }
 
-Category.multipleDelete = (id, callback) => {
-    let sql = `DELETE FROM category WHERE id IN (?)`
+Enquiry.multipleDelete = (id, callback) => {
+    let sql = `DELETE FROM enquiry WHERE id IN (?)`
     dbConn.query(sql,[id], (err,res) => {
         if(err){
             console.log('Error:', err.sqlMessage);
@@ -83,4 +86,4 @@ Category.multipleDelete = (id, callback) => {
     })
 }
 
-module.exports = Category;
+module.exports = Enquiry;
